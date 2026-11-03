@@ -1,0 +1,53 @@
+@model HR.Models.Departman
+@{
+    ViewData["Title"] = "Departmanı sil";
+    int personelSayisi = ViewBag.PersonelSayisi ?? 0;
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card border-danger shadow-sm">
+            <div class="card-header bg-danger text-white">
+                <i class="bi bi-exclamation-triangle"></i> Silme onayı
+            </div>
+            <div class="card-body">
+
+                <p>
+                    <span>@Model.DepartmanAd</span>
+                    departmanını silmek üzeresiniz.
+                </p>
+
+                @if (personelSayisi > 0)
+                {
+                    <div class="alert alert-warning">
+                        <i class="bi bi-x-circle"></i>
+                        Bu departmanda <strong>@personelSayisi personel</strong> var.
+                        Silmeden önce personelleri silmeli veya başka departmana taşımalısınız.
+                    </div>
+
+                    <a asp-controller="Personel" asp-action="Index"
+                       asp-route-departmanId="@Model.DepartmanId"
+                       class="btn btn-primary">
+                        Bu departmanın personellerini gör
+                    </a>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Vazgeç</a>
+                }
+                else
+                {
+                    <div class="alert alert-info small">
+                        Kayıt tamamen silinmez, pasif duruma alınır.
+                    </div>
+
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="DepartmanId" name="id" />
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Evet, sil
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">Vazgeç</a>
+                    </form>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>

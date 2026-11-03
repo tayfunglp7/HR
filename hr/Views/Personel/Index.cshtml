@@ -1,0 +1,198 @@
+@model List<HR.Models.Personel>
+
+@{
+    ViewData["Title"] = "Personeller";
+}
+
+@if (TempData["Basarili"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle"></i> @TempData["Basarili"]
+
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card border-0 shadow-sm">
+
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <span class="fw-semibold">
+            Kayıtlı personeller
+        </span>
+
+        <form asp-action="Index" method="get" class="d-flex align-items-center gap-2 m-0">
+            <input type="text" name="aramaKelimesi" value="@ViewBag.AramaKelimesi" class="form-control form-control-sm"
+                   placeholder="Ad, Soyad, TC veya Departman..." style="width: 250px;">
+            <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-search"></i> Ara</button>
+            @if (!string.IsNullOrEmpty(ViewBag.AramaKelimesi))
+            {
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Temizle</a>
+            }
+        </form>
+
+        <a asp-action="Create" class="btn btn-success btn-sm">
+            <i class="bi bi-plus-lg"></i>
+        </a>
+    </div>
+
+    <div class="card-body p-0">
+
+        @if (Model.Count == 0)
+        {
+            <div class="text-center text-muted py-5">
+
+                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+
+                <p class="mb-3">
+                    Henüz personel eklenmemiş.
+                </p>
+
+                <a asp-action="Create" class="btn btn-sm btn-primary">
+                    İlk personeli ekle
+                </a>
+
+            </div>
+        }
+        else
+        {
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>Ad Soyad</th>
+                        <th>Departman</th>
+                        <th>Pozisyon</th>
+                        <th>İşe Giriş</th>
+                        <th>Kıdem</th>
+                        <th>İletişim</th>
+                        <th class="text-end">İşlemler</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @{
+                        int sira = 1;
+                    }
+
+                    @foreach (var personel in Model)
+                    {
+                        int kidemYili =
+                            DateTime.Today.Year - personel.PersonelIseGirisTarihi.Year;
+
+                        if (personel.PersonelIseGirisTarihi.Date >
+                            DateTime.Today.AddYears(-kidemYili))
+                        {
+                            kidemYili--;
+                        }
+
+                        string tcMaskeli = personel.PersonelTc.Length >= 3
+                            ? personel.PersonelTc.Substring(0, 3) + "********"
+                            : "***********";
+
+                        <tr>
+
+                            <td class="text-muted">
+                                @sira
+                            </td>
+
+                            <td>
+                                <a asp-action="Details" asp-route-id="@personel.PersonelId"
+                                   class="fw-semibold text-decoration-none">
+
+                                    @personel.TamAd
+
+                                </a>
+
+                                <div class="text-muted small">
+                                    @personel.PersonelCinsiyet
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="badge bg-secondary">
+                                    @personel.DepartmanAdi
+                                </span>
+                            </td>
+
+                            <td>
+                                @personel.PersonelPozisyon
+                            </td>
+
+                            <td>
+                                @personel.PersonelIseGirisTarihi.ToString("dd.MM.yyyy")
+                            </td>
+
+                            <td>
+                                <span class="badge bg-info">
+                                    @kidemYili yıl
+                                </span>
+                            </td>
+
+                            <td class="small">
+                                <div>
+                                    @personel.PersonelTelefon
+                                </div>
+
+                                <div class="text-muted">
+                                    @personel.PersonelEposta
+                                </div>
+                            </td>
+
+                            <td class="text-end text-nowrap">
+
+                                <a asp-action="Details" asp-route-id="@personel.PersonelId" class="btn btn-sm btn-primary me-1">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </a>
+
+                                <a asp-action="Edit" asp-route-id="@personel.PersonelId" class="btn btn-sm btn-warning">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <a asp-action="Delete" asp-route-id="@personel.PersonelId" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        sira++;
+                    }
+
+                </tbody>
+
+            </table>
+        }
+
+        @if (ViewBag.ToplamSayfa > 1)
+        {
+            <div class="card-footer bg-white d-flex justify-content-center border-top-0 pt-3">
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item @(ViewBag.MevcutSayfa == 1 ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-sayfa="@(ViewBag.MevcutSayfa - 1)"
+                           asp-route-aramaKelimesi="@ViewBag.AramaKelimesi">Önceki</a>
+                    </li>
+                    
+                    @for (int i = 1; i <= ViewBag.ToplamSayfa; i++)
+                    {
+                        <li class="page-item @(i == ViewBag.MevcutSayfa ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-sayfa="@i"
+                               asp-route-aramaKelimesi="@ViewBag.AramaKelimesi">@i</a>
+                        </li>
+                    }
+
+                    <li class="page-item @(ViewBag.MevcutSayfa == ViewBag.ToplamSayfa ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-sayfa="@(ViewBag.MevcutSayfa + 1)"
+                           asp-route-aramaKelimesi="@ViewBag.AramaKelimesi">Sonraki</a>
+                    </li>
+                </ul>
+            </div>
+        }
+
+    </div>
+</div>
+
+</div>
+</div>

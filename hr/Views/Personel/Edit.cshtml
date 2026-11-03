@@ -1,0 +1,266 @@
+@model HR.Models.Personel
+
+@{
+    ViewData["Title"] = "Personel Düzenle";
+}
+
+<div class="row">
+    <div class="col-lg-10">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+
+                <form asp-action="Edit" method="post">
+
+                    <input type="hidden" asp-for="PersonelId" />
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+
+                    <h6 class="text-muted mb-3">
+                        Kişisel Bilgiler
+                    </h6>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label asp-for="PersonelAd" class="form-label"></label>
+
+                            <input asp-for="PersonelAd" class="form-control" autofocus />
+
+                            <span asp-validation-for="PersonelAd" class="text-danger small"></span>
+
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label asp-for="PersonelSoyad" class="form-label"></label>
+
+                            <input asp-for="PersonelSoyad" class="form-control" />
+
+                            <span asp-validation-for="PersonelSoyad" class="text-danger small"></span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="col-md-4 mb-3">
+
+                            <label asp-for="PersonelDogumTarihi" class="form-label"></label>
+
+                            <input asp-for="PersonelDogumTarihi" type="date" class="form-control" />
+
+                            <span asp-validation-for="PersonelDogumTarihi" class="text-danger small"></span>
+
+                        </div>
+
+
+                        <div class="col-md-4 mb-3">
+
+                            <label class="form-label">
+                                Cinsiyet
+                            </label>
+
+                            <div>
+
+                                <div class="form-check form-check-inline">
+
+                                    <input class="form-check-input" type="radio" asp-for="PersonelCinsiyet"
+                                           value="Kadın" id="cinsiyetK" />
+
+                                    <label class="form-check-label" for="cinsiyetK">
+                                        Kadın
+                                    </label>
+
+                                </div>
+
+
+                                <div class="form-check form-check-inline">
+
+                                    <input class="form-check-input" type="radio" asp-for="PersonelCinsiyet"
+                                           value="Erkek" id="cinsiyetE" />
+
+                                    <label class="form-check-label" for="cinsiyetE">
+                                        Erkek
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                            <span asp-validation-for="PersonelCinsiyet" class="text-danger small"></span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label asp-for="PersonelTc" class="form-label"></label>
+
+                        <input asp-for="PersonelTc" class="form-control" maxlength="11"
+                               placeholder="11 haneli TC kimlik numarası" />
+
+                        <span asp-validation-for="PersonelTc" class="text-danger small"></span>
+
+                        <div class="form-text">
+                            0 ile başlayamaz. Aynı TC kimlik numarası
+                            ikinci kez kaydedilemez.
+                        </div>
+
+                    </div>
+
+
+                    <hr class="my-4" />
+
+
+                    <h6 class="text-muted mb-3">
+                        İş Bilgileri
+                    </h6>
+
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label asp-for="DepartmanId" class="form-label"></label>
+
+                            <select asp-for="DepartmanId" asp-items="ViewBag.Departmanlar" class="form-select">
+
+                                <option value="">
+                                    -- Departman seçin --
+                                </option>
+
+                            </select>
+
+                            <span asp-validation-for="DepartmanId" class="text-danger small"></span>
+
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label asp-for="PersonelPozisyon" class="form-label"></label>
+
+                            <input asp-for="PersonelPozisyon" class="form-control" placeholder="Örn: Yazılım Uzmanı" />
+
+                            <span asp-validation-for="PersonelPozisyon" class="text-danger small"></span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label asp-for="PersonelIseGirisTarihi" class="form-label"></label>
+
+                            <input asp-for="PersonelIseGirisTarihi" type="date" class="form-control" />
+
+                            <span asp-validation-for="PersonelIseGirisTarihi" class="text-danger small"></span>
+
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label asp-for="YillikIzinHakki" class="form-label"></label>
+
+                            <input asp-for="YillikIzinHakki" class="form-control" />
+
+                            <span asp-validation-for="YillikIzinHakki" class="text-danger small"></span>
+
+                            <div class="form-text">
+                                Varsayılan yıllık izin hakkı: 14 gün.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <hr class="my-4" />
+
+
+                    <h6 class="text-muted mb-3">
+                        İletişim Bilgileri
+                    </h6>
+
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label asp-for="PersonelTelefon" class="form-label"></label>
+
+                            <input asp-for="PersonelTelefon" class="form-control" placeholder="05321234567" />
+
+                            <span asp-validation-for="PersonelTelefon" class="text-danger small"></span>
+
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label asp-for="PersonelEposta" class="form-label"></label>
+
+                            <input asp-for="PersonelEposta" class="form-control" placeholder="ad.soyad@example.com" />
+
+                            <span asp-validation-for="PersonelEposta" class="text-danger small"></span>
+
+                            <div class="form-text">
+                                Aynı e-posta adresi ikinci kez kaydedilemez.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <hr />
+
+
+                    <div class="text-muted small mb-3">
+                        <i class="bi bi-clock-history"></i>
+                        Kayıt tarihi: @Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")
+
+                        @if (Model.UpdatedDate.HasValue)
+                        {
+                            <span> &nbsp;|&nbsp; Son güncelleme: @Model.UpdatedDate.Value.ToString("dd.MM.yyyy HH:mm")</span>
+                        }
+                        else
+                        {
+                            <span> &nbsp;|&nbsp; Henüz güncellenmemiş</span>
+                        }
+                    </div>
+
+                    <hr />
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-lg"></i> Değişiklikleri kaydet
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Vazgeç</a>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

@@ -1,0 +1,76 @@
+@model HR.Models.Departman
+@{
+    ViewData["Title"] = "Departman Detayı";
+    string basHarf = Model.DepartmanAd.Length > 0 ? Model.DepartmanAd.Substring(0, 1).ToUpper() : "D";
+}
+
+<div class="row">
+    <div class="col-lg-7">
+
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-body border-bottom">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold"
+                         style="width: 56px; height: 56px; font-size: 1.5rem;">
+                        @basHarf
+                    </div>
+                    <div>
+                        <h5 class="mb-1">@Model.DepartmanAd</h5>
+                        <span class="badge bg-light text-dark border">
+                            <i class="bi bi-people"></i> @Model.PersonelSayisi Personel
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <h6 class="text-muted mb-3">Departman Bilgileri</h6>
+
+                <dl class="row mb-4">
+                    <dt class="col-sm-4 fw-normal text-muted">Açıklama</dt>
+                    <dd class="col-sm-8">
+                        @(string.IsNullOrWhiteSpace(Model.Aciklama) ? "Açıklama girilmemiş." : Model.Aciklama)
+                    </dd>
+
+                    <dt class="col-sm-4 fw-normal text-muted">Kayıt Tarihi</dt>
+                    <dd class="col-sm-8">@Model.CreatedDate.ToString("dd MMMM yyyy HH:mm")</dd>
+
+                    <dt class="col-sm-4 fw-normal text-muted">Son Güncelleme</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.UpdatedDate.HasValue)
+                        {
+                            @Model.UpdatedDate.Value.ToString("dd MMMM yyyy HH:mm")
+                        }
+                        else
+                        {
+                            <span class="text-muted">Henüz güncellenmemiş</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-4 fw-normal text-muted">Durum</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.AktifMi)
+                        {
+                            <span class="badge bg-success">Aktif</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Pasif</span>
+                        }
+                    </dd>
+                </dl>
+            </div>
+
+            <div class="card-footer bg-white">
+                <a asp-action="Edit" asp-route-id="@Model.DepartmanId" class="btn btn-primary btn-sm">
+                    <i class="bi bi-pencil"></i> Düzenle
+                </a>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left"></i> Listeye dön
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>

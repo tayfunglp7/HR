@@ -1,0 +1,269 @@
+@model HR.Models.Izin
+
+@{
+    ViewData["Title"] = "İzni Düzenle";
+}
+
+<div class="row">
+    <div class="col-lg-8">
+
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-pencil-square"></i>
+                    İzni Düzenle
+                </h5>
+            </div>
+
+            <div class="card-body">
+
+                <form asp-action="Edit" method="post">
+
+                    <input asp-for="IzinId" type="hidden" />
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger">
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="PersonelId" class="form-label"></label>
+
+                        <select asp-for="PersonelId" asp-items="ViewBag.Personeller" class="form-select">
+
+                            <option value="">
+                                -- Personel seçin --
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="PersonelId" class="text-danger small">
+                        </span>
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label asp-for="IzinTipi" class="form-label">
+                        </label>
+
+                        <select asp-for="IzinTipi" class="form-select">
+
+                            <option value="">
+                                -- İzin tipi seçin --
+                            </option>
+
+                            <option value="Yıllık">
+                                Yıllık
+                            </option>
+
+                            <option value="Mazeret">
+                                Mazeret
+                            </option>
+
+                            <option value="Hastalık">
+                                Hastalık
+                            </option>
+
+                            <option value="Ücretsiz">
+                                Ücretsiz
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="IzinTipi" class="text-danger small">
+                        </span>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label asp-for="BaslangicTarihi" class="form-label">
+                            </label>
+
+                            <input asp-for="BaslangicTarihi" type="date" class="form-control" id="baslangicTarihi" />
+
+                            <span asp-validation-for="BaslangicTarihi" class="text-danger small">
+                            </span>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label asp-for="BitisTarihi" class="form-label">
+                            </label>
+
+                            <input asp-for="BitisTarihi" type="date" class="form-control" id="bitisTarihi" />
+
+                            <span asp-validation-for="BitisTarihi" class="text-danger small">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label asp-for="GunSayisi" class="form-label">
+                        </label>
+
+                        <input asp-for="GunSayisi" type="number" class="form-control" id="gunSayisi" readonly />
+
+                        <div class="form-text">
+                            Başlangıç ve bitiş tarihine göre otomatik hesaplanır.
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label asp-for="Aciklama" class="form-label">
+                        </label>
+
+                        <textarea asp-for="Aciklama" class="form-control" rows="4"
+                                  placeholder="İzin hakkında açıklama yazabilirsiniz..."></textarea>
+
+                        <span asp-validation-for="Aciklama" class="text-danger small">
+                        </span>
+
+                        <div class="form-text">
+                            İsteğe bağlı.
+                        </div>
+
+                    </div>
+
+                    <div class="alert alert-light border">
+
+                        <i class="bi bi-info-circle"></i>
+
+                        Mevcut izin durumu:
+
+                        @if (Model.Durum == "Beklemede")
+                        {
+                            <span class="badge bg-warning text-dark">
+                                Beklemede
+                            </span>
+                        }
+                        else if (Model.Durum == "Onaylandı")
+                        {
+                            <span class="badge bg-success">
+                                Onaylandı
+                            </span>
+                        }
+                        else if (Model.Durum == "Reddedildi")
+                        {
+                            <span class="badge bg-danger">
+                                Reddedildi
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">
+                                @Model.Durum
+                            </span>
+                        }
+
+                        <div class="small text-muted mt-2">
+                            İzin durumu bu sayfadan değiştirilmez.
+                            Onaylama veya reddetme işlemleri izinler listesinden yapılır.
+                        </div>
+
+                    </div>
+
+                    <hr />
+
+                    <button type="submit" class="btn btn-success">
+
+                        <i class="bi bi-check-lg"></i>
+                        Değişiklikleri kaydet
+
+                    </button>
+
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+
+                        Vazgeç
+
+                    </a>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        function gunSayisiniHesapla() {
+
+            const baslangic =
+                document.getElementById("baslangicTarihi").value;
+
+            const bitis =
+                document.getElementById("bitisTarihi").value;
+
+            const gunSayisi =
+                document.getElementById("gunSayisi");
+
+            if (!baslangic || !bitis) {
+
+                gunSayisi.value = "";
+
+                return;
+            }
+
+            const baslangicTarihi =
+                new Date(baslangic);
+
+            const bitisTarihi =
+                new Date(bitis);
+
+            let gun = 0;
+            let iterasyonTarihi = new Date(baslangicTarihi);
+
+            while (iterasyonTarihi <= bitisTarihi) {
+                const haftaninGunu = iterasyonTarihi.getDay();
+    
+                if (haftaninGunu !== 0 && haftaninGunu !== 6) {
+                    gun++;
+                }
+    
+                iterasyonTarihi.setDate(iterasyonTarihi.getDate() + 1);
+            }
+
+            if (gun > 0) {
+
+                gunSayisi.value = gun;
+
+            }
+            else {
+
+                gunSayisi.value = "";
+
+            }
+        }
+
+        document
+            .getElementById("baslangicTarihi")
+            .addEventListener(
+                "change",
+                gunSayisiniHesapla
+            );
+
+        document
+            .getElementById("bitisTarihi")
+            .addEventListener(
+                "change",
+                gunSayisiniHesapla
+            );
+
+        gunSayisiniHesapla();
+
+    </script>
+}

@@ -1,0 +1,108 @@
+@model HR.Models.Izin
+@{
+    ViewData["Title"] = "İzin Detayı";
+}
+
+<div class="row">
+    <div class="col-lg-8">
+
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-body border-bottom d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded bg-light text-primary d-flex align-items-center justify-content-center"
+                         style="width: 50px; height: 50px; font-size: 1.5rem;">
+                        <i class="bi bi-calendar-check"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-1">@Model.PersonelAdSoyad</h5>
+                        <span class="badge bg-secondary">@Model.DepartmanAdi</span>
+                    </div>
+                </div>
+
+                <div>
+                    @if (Model.Durum == "Beklemede")
+                    {
+                        <span class="badge bg-warning text-dark fs-6">Beklemede</span>
+                    }
+                    else if (Model.Durum == "Onaylandı")
+                    {
+                        <span class="badge bg-success fs-6">Onaylandı</span>
+                    }
+                    else if (Model.Durum == "Reddedildi")
+                    {
+                        <span class="badge bg-danger fs-6">Reddedildi</span>
+                    }
+                </div>
+            </div>
+
+            <div class="card-body">
+                <h6 class="text-muted mb-3">İzin Talebi Bilgileri</h6>
+
+                <dl class="row mb-4">
+                    <dt class="col-sm-4 fw-normal text-muted">İzin Tipi</dt>
+                    <dd class="col-sm-8 fw-semibold">@Model.IzinTipi</dd>
+
+                    <dt class="col-sm-4 fw-normal text-muted">Tarih Aralığı</dt>
+                    <dd class="col-sm-8">
+                        @Model.BaslangicTarihi.ToString("dd.MM.yyyy") <i class="bi bi-arrow-right mx-1 text-muted"></i>
+                        @Model.BitisTarihi.ToString("dd.MM.yyyy")
+                    </dd>
+
+                    <dt class="col-sm-4 fw-normal text-muted">Kullanılan Gün</dt>
+                    <dd class="col-sm-8 fw-bold text-dark">@Model.GunSayisi gün</dd>
+
+                    <dt class="col-sm-4 fw-normal text-muted">Açıklama</dt>
+                    <dd class="col-sm-8">
+                        @(string.IsNullOrWhiteSpace(Model.Aciklama) ? "Açıklama belirtilmemiş." : Model.Aciklama)
+                    </dd>
+                </dl>
+
+                <hr class="my-4" />
+                <h6 class="text-muted mb-3">Sistem Bilgileri</h6>
+
+                <dl class="row mb-0">
+                    <dt class="col-sm-4 fw-normal text-muted">Oluşturulma</dt>
+                    <dd class="col-sm-8">@Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")</dd>
+
+                    <dt class="col-sm-4 fw-normal text-muted">Son İşlem</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.UpdatedDate.HasValue)
+                        {
+                            @Model.UpdatedDate.Value.ToString("dd.MM.yyyy HH:mm")
+                        }
+                        else
+                        {
+                            <span class="text-muted">İşlem yapılmamış</span>
+                        }
+                    </dd>
+                </dl>
+            </div>
+
+            <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+                <div>
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-arrow-left"></i> Listeye dön
+                    </a>
+                </div>
+                
+                @if (Model.Durum == "Beklemede")
+                {
+                    <div class="d-flex gap-2">
+                        <form asp-action="Onayla" asp-route-id="@Model.IzinId" method="post">
+                            <button type="submit" class="btn btn-sm btn-success">
+                                <i class="bi bi-check-lg"></i> Onayla
+                            </button>
+                        </form>
+                        <form asp-action="Reddet" asp-route-id="@Model.IzinId" method="post">
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                <i class="bi bi-x-lg"></i> Reddet
+                            </button>
+                        </form>
+                    </div>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>

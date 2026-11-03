@@ -1,0 +1,265 @@
+@model List<HR.Models.Izin>
+
+@{
+    ViewData["Title"] = "İzinler";
+}
+
+@if (TempData["Basarili"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle"></i>
+        @TempData["Basarili"]
+
+        <button type="button" class="btn-close" data-bs-dismiss="alert">
+        </button>
+    </div>
+}
+
+
+<div class="card border-0 shadow-sm">
+
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+
+        <span class="fw-semibold">
+            <i class="bi bi-calendar-check"></i>
+            İzinler (@Model.Count)
+        </span>
+
+        <div class="d-flex gap-2">
+        
+            <a asp-action="IzinleriIndir" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-download"></i>
+            </a>
+
+            <a asp-action="Create" class="btn btn-success btn-sm">
+                <i class="bi bi-plus-lg"></i>
+            </a>
+        
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="card-body p-0">
+
+    @if (Model.Count == 0)
+    {
+        <div class="text-center text-muted py-5">
+
+            <i class="bi bi-calendar-x fs-1 d-block mb-2"></i>
+
+            <p class="mb-3">
+                Henüz izin kaydı bulunmuyor.
+            </p>
+
+            <a asp-action="Create" class="btn btn-sm btn-success">
+
+                <i class="bi bi-plus-lg"></i>
+                İlk izni ekle
+
+            </a>
+
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>Personel</th>
+
+                        <th>Departman</th>
+
+                        <th>İzin Tipi</th>
+
+                        <th>Başlangıç</th>
+
+                        <th>Bitiş</th>
+
+                        <th class="text-center">
+                            Gün
+                        </th>
+
+                        <th class="text-center">
+                            Durum
+                        </th>
+
+                        <th class="text-end">
+                            İşlemler
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @foreach (var izin in Model)
+                    {
+                        <tr>
+
+                            <td>
+
+                                <div class="fw-semibold">
+                                    @izin.PersonelAdSoyad
+                                </div>
+
+                            </td>
+
+                            <td>
+
+                                <span class="text-muted">
+                                    @izin.DepartmanAdi
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                @if (izin.IzinTipi == "Yıllık")
+                                {
+                                    <span class="badge bg-secondary">
+                                        Yıllık
+                                    </span>
+                                }
+                                else if (izin.IzinTipi == "Mazeret")
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        Mazeret
+                                    </span>
+                                }
+                                else if (izin.IzinTipi == "Hastalık")
+                                {
+                                    <span class="badge bg-danger">
+                                        Hastalık
+                                    </span>
+                                }
+                                else if (izin.IzinTipi == "Ücretsiz")
+                                {
+                                    <span class="badge bg-success">
+                                        Ücretsiz
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">
+                                        @izin.IzinTipi
+                                    </span>
+                                }
+
+                            </td>
+
+                            <td class="small">
+
+                                @izin.BaslangicTarihi.ToString("dd.MM.yyyy")
+
+                            </td>
+
+                            <td class="small">
+
+                                @izin.BitisTarihi.ToString("dd.MM.yyyy")
+
+                            </td>
+
+                            <td class="text-center">
+
+                                <span class="fw-semibold">
+                                    @izin.GunSayisi
+                                </span>
+
+                            </td>
+
+                            <td class="text-center">
+
+                                @if (izin.Durum == "Beklemede")
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        Beklemede
+                                    </span>
+                                }
+                                else if (izin.Durum == "Onaylandı")
+                                {
+                                    <span class="badge bg-success">
+                                        Onaylandı
+                                    </span>
+                                }
+                                else if (izin.Durum == "Reddedildi")
+                                {
+                                    <span class="badge bg-danger">
+                                        Reddedildi
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">
+                                        @izin.Durum
+                                    </span>
+                                }
+
+                            </td>
+
+                            <td class="text-end text-nowrap">
+
+
+                                @if (izin.Durum == "Beklemede")
+                                {
+                                    <form asp-action="Onayla" asp-route-id="@izin.IzinId" method="post" class="d-inline">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit" class="btn btn-sm btn-success" title="İzni onayla">
+
+                                            <i class="bi bi-check-lg"></i>
+
+                                        </button>
+
+                                    </form>
+
+                                    <form asp-action="Reddet" asp-route-id="@izin.IzinId" method="post" class="d-inline">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit" class="btn btn-sm btn-danger" title="İzni reddet">
+
+                                            <i class="bi bi-x-lg"></i>
+
+                                        </button>
+
+                                    </form>
+                                }
+
+
+                                <a asp-action="Details" asp-route-id="@izin.IzinId" class="btn btn-sm btn-primary me-1"
+                                   title="Detaylar">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </a>
+
+                                <a asp-action="Edit" asp-route-id="@izin.IzinId" class="btn btn-sm btn-warning"
+                                   title="Düzenle">
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </a>
+
+                                <a asp-action="Delete" asp-route-id="@izin.IzinId" class="btn btn-sm btn-danger"
+                                   title="Sil">
+
+                                    <i class="bi bi-trash"></i>
+
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+</div>

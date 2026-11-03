@@ -1,0 +1,173 @@
+@model HR.Models.Izin
+
+@{
+    ViewData["Title"] = "İzni Sil";
+}
+
+<div class="row">
+    <div class="col-lg-7">
+
+        <div class="card border-danger shadow-sm">
+
+            <div class="card-header bg-danger text-white">
+                <i class="bi bi-exclamation-triangle"></i>
+                Silme Onayı
+            </div>
+
+            <div class="card-body">
+
+                <p>Bu izin kaydını silmek üzeresiniz:</p>
+
+                <dl class="row mb-4">
+
+                    <dt class="col-sm-4">
+                        Personel
+                    </dt>
+
+                    <dd class="col-sm-8 fw-semibold">
+                        @Model.PersonelAdSoyad
+                    </dd>
+
+                    <dt class="col-sm-4">
+                        Departman
+                    </dt>
+
+                    <dd class="col-sm-8">
+                        @Model.DepartmanAdi
+                    </dd>
+
+                    <dt class="col-sm-4">
+                        İzin Tipi
+                    </dt>
+
+                    <dd class="col-sm-8">
+
+                        @if (Model.IzinTipi == "Yıllık")
+                        {
+                            <span class="badge bg-secondary">
+                                Yıllık
+                            </span>
+                        }
+                        else if (Model.IzinTipi == "Mazeret")
+                        {
+                            <span class="badge bg-warning text-dark">
+                                Mazeret
+                            </span>
+                        }
+                        else if (Model.IzinTipi == "Hastalık")
+                        {
+                            <span class="badge bg-danger">
+                                Hastalık
+                            </span>
+                        }
+                        else if (Model.IzinTipi == "Ücretsiz")
+                        {
+                            <span class="badge bg-success">
+                                Ücretsiz
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">
+                                @Model.IzinTipi
+                            </span>
+                        }
+
+                    </dd>
+
+                    <dt class="col-sm-4">
+                        Durum
+                    </dt>
+
+                    <dd class="col-sm-8">
+
+                        @if (Model.Durum == "Beklemede")
+                        {
+                            <span class="badge bg-warning text-dark">
+                                Beklemede
+                            </span>
+                        }
+                        else if (Model.Durum == "Onaylandı")
+                        {
+                            <span class="badge bg-success">
+                                Onaylandı
+                            </span>
+                        }
+                        else if (Model.Durum == "Reddedildi")
+                        {
+                            <span class="badge bg-danger">
+                                Reddedildi
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">
+                                @Model.Durum
+                            </span>
+                        }
+
+                    </dd>
+
+                    <dt class="col-sm-4">
+                        Başlangıç Tarihi
+                    </dt>
+
+                    <dd class="col-sm-8">
+                        @Model.BaslangicTarihi.ToString("dd.MM.yyyy")
+                    </dd>
+
+                    <dt class="col-sm-4">
+                        Bitiş Tarihi
+                    </dt>
+
+                    <dd class="col-sm-8">
+                        @Model.BitisTarihi.ToString("dd.MM.yyyy")
+                    </dd>
+
+                    <dt class="col-sm-4">
+                        Gün Sayısı
+                    </dt>
+
+                    <dd class="col-sm-8">
+                        @Model.GunSayisi gün
+                    </dd>
+
+                </dl>
+
+                <div class="alert alert-info small">
+
+                    <i class="bi bi-info-circle"></i>
+
+                    Bu kayıt veritabanından tamamen silinmez.
+                    Pasif duruma alınır ve normal izin listesinde
+                    artık gösterilmez.
+
+                </div>
+
+                <form asp-action="Delete" method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden" asp-for="IzinId" name="id" />
+
+                    <button type="submit" class="btn btn-danger">
+
+                        <i class="bi bi-trash"></i>
+                        Evet, sil
+
+                    </button>
+
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+
+                        Vazgeç
+
+                    </a>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
